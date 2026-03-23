@@ -1,0 +1,44 @@
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+.env/
+.envrc
+.venv/
+
+# ===============================
+# Jupyter / Databricks
+# ===============================
+.ipynb_checkpoints/
+
+# ===============================
+# System files
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Logs
+# ===============================
+*.log
+
+# ===============================
+# Secrets / credentials
+# ===============================
+*.env
+secrets.json
+config.yml
+config.yaml
+
+# ===============================
+# Databricks local artifacts (if any)
+# ===============================
+.databricks/
