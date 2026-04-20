@@ -1,0 +1,829 @@
+{
+  "datasets": [
+    {
+      "name": "a6a03a67",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT\n",
+        "  COUNT (*) AS accounts_scored,\n",
+        "  SUM(CASE WHEN risk_bucket = 'High' THEN 1 ELSE 0 END) AS high_risk_accounts,\n",
+        "  ROUND(SUM(revenue_at_risk), 2) AS total_revenue_at_risk, \n",
+        "  ROUND(AVG(non_renewal_probability), 4) AS avg_churn_probability\n",
+        "FROM renewal_dashboard_base; \n"
+      ]
+    },
+    {
+      "name": "f74e5142",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT \n",
+        "  risk_bucket, \n",
+        "  COUNT(*) AS account_count, \n",
+        "  ROUND(SUM(revenue_at_risk), 2) AS revenue_at_risk\n",
+        "FROM renewal_dashboard_base\n",
+        "GROUP BY risk_bucket\n",
+        "ORDER BY revenue_at_risk DESC;"
+      ]
+    },
+    {
+      "name": "225b37ad",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT\n",
+        "  risk_rank,\n",
+        "  client_id,\n",
+        "  industry,\n",
+        "  region,\n",
+        "  company_size,\n",
+        "  contract_end_date,\n",
+        "  ROUND(non_renewal_probability, 4) AS non_renewal_probability,\n",
+        "  ROUND(annual_contract_value, 2) AS annual_contract_value,\n",
+        "  ROUND(revenue_at_risk, 2) AS revenue_at_risk,\n",
+        "  top_driver_summary,\n",
+        "  recommended_action\n",
+        "FROM renewal_dashboard_base\n",
+        "ORDER BY risk_rank\n",
+        "LIMIT 5;"
+      ]
+    },
+    {
+      "name": "fba81ada",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT\n",
+        "  client_id,\n",
+        "  driver_priority,\n",
+        "  driver_name,\n",
+        "  driver_explanation\n",
+        "  -- ROUND(non_renewal_probability, 4) AS non_renewal_probability,\n",
+        "  -- ROUND(revenue_at_risk, 2) AS revenue_at_risk\n",
+        "FROM renewal_account_driver_detail\n",
+        "ORDER BY client_id, driver_priority;"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "fa03e105",
+      "displayName": "Renewal_Risk_Dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "d0052299",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a6a03a67",
+                  "fields": [
+                    {
+                      "name": "accounts_scored",
+                      "expression": "`accounts_scored`"
+                    },
+                    {
+                      "name": "high_risk_accounts",
+                      "expression": "`high_risk_accounts`"
+                    },
+                    {
+                      "name": "total_revenue_at_risk",
+                      "expression": "`total_revenue_at_risk`"
+                    },
+                    {
+                      "name": "avg_churn_probability",
+                      "expression": "`avg_churn_probability`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "rowsPerPage": 25,
+              "displayRowNumbers": false,
+              "frame": {
+                "title": "Visualization 1",
+                "showTitle": false
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "accounts_scored",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "Accounts Scored",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "high_risk_accounts",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "High Risk Accounts",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    },
+                    "style": {
+                      "type": "basic",
+                      "foregroundColor": "#E92828"
+                    }
+                  },
+                  {
+                    "fieldName": "total_revenue_at_risk",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "$0.00"
+                    },
+                    "displayName": "Total Revenue at Risk",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "avg_churn_probability",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "%0.00",
+                      "scalePercentBy100": true
+                    },
+                    "displayName": "Average Churn Probability",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "350fa2ca",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\"><span style=\"color: #E8ECF0;\">Renewal Risk Dashboard</span></span>"
+              ]
+            },
+            "specExtensions": {
+              "widgetBackgroundColor": {
+                "light": "#4B9DBF"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "1f16180e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f74e5142",
+                  "fields": [
+                    {
+                      "name": "risk_bucket",
+                      "expression": "`risk_bucket`"
+                    },
+                    {
+                      "name": "sum(account_count)",
+                      "expression": "SUM(`account_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Accounts by Risk Bucket",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "risk_bucket",
+                  "axis": {
+                    "title": "Risk Bucket"
+                  },
+                  "displayName": "Risk Bucket",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "High",
+                        "Medium",
+                        "Low"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(account_count)",
+                  "axis": {
+                    "title": "Number of Accounts"
+                  },
+                  "displayName": "revenue_at_risk",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "risk_bucket",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "High",
+                        "Medium",
+                        "Low"
+                      ]
+                    },
+                    "mappings": [
+                      {
+                        "value": "High",
+                        "color": "#077A9D"
+                      },
+                      {
+                        "value": "Low",
+                        "color": "#8BCAE7"
+                      },
+                      {
+                        "value": "Medium",
+                        "color": "#3BCAE1"
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "b117a743",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f74e5142",
+                  "fields": [
+                    {
+                      "name": "risk_bucket",
+                      "expression": "`risk_bucket`"
+                    },
+                    {
+                      "name": "sum(revenue_at_risk)",
+                      "expression": "SUM(`revenue_at_risk`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Revenue at Risk by Risk Bucket",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "risk_bucket",
+                  "axis": {
+                    "title": "Risk Bucket"
+                  },
+                  "displayName": "Risk Bucket",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "High",
+                        "Medium",
+                        "Low"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(revenue_at_risk)",
+                  "axis": {
+                    "title": "Revenue at Risk"
+                  },
+                  "displayName": "revenue_at_risk",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "risk_bucket",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "High",
+                        "Medium",
+                        "Low"
+                      ]
+                    },
+                    "mappings": [
+                      {
+                        "value": "Low",
+                        "color": "#8BCAE7"
+                      },
+                      {
+                        "value": "Medium",
+                        "color": "#3BCAE1"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 4,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "81cfb2b2",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## <span style=\"text-align:center;display:block\"><span style=\"color:#E8ECF0\">Accounts & Revenue at Risk</span></span>"
+              ]
+            },
+            "specExtensions": {
+              "widgetBackgroundColor": {
+                "light": "#4B9DBF"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "91f91be7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "225b37ad",
+                  "fields": [
+                    {
+                      "name": "risk_rank",
+                      "expression": "`risk_rank`"
+                    },
+                    {
+                      "name": "client_id",
+                      "expression": "`client_id`"
+                    },
+                    {
+                      "name": "industry",
+                      "expression": "`industry`"
+                    },
+                    {
+                      "name": "region",
+                      "expression": "`region`"
+                    },
+                    {
+                      "name": "company_size",
+                      "expression": "`company_size`"
+                    },
+                    {
+                      "name": "contract_end_date",
+                      "expression": "`contract_end_date`"
+                    },
+                    {
+                      "name": "non_renewal_probability",
+                      "expression": "`non_renewal_probability`"
+                    },
+                    {
+                      "name": "annual_contract_value",
+                      "expression": "`annual_contract_value`"
+                    },
+                    {
+                      "name": "revenue_at_risk",
+                      "expression": "`revenue_at_risk`"
+                    },
+                    {
+                      "name": "top_driver_summary",
+                      "expression": "`top_driver_summary`"
+                    },
+                    {
+                      "name": "recommended_action",
+                      "expression": "`recommended_action`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "rowsPerPage": 25,
+              "displayRowNumbers": false,
+              "frame": {
+                "title": "Visualization 1",
+                "showTitle": false
+              },
+              "freezeUpToColumnNumber": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "risk_rank",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "Risk Rank",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "client_id",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "Client ID",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "industry",
+                    "useForSearch": false,
+                    "displayName": "Industry",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "region",
+                    "useForSearch": false,
+                    "displayName": "Region",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "company_size",
+                    "useForSearch": false,
+                    "displayName": "Company Size",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "contract_end_date",
+                    "useForSearch": false,
+                    "contentAlignment": "right",
+                    "format": {
+                      "type": "moment.js",
+                      "format": "DD/MM/YYYY"
+                    },
+                    "displayName": "Contract End Date",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "non_renewal_probability",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0.00"
+                    },
+                    "displayName": "Non Renewal Probability",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "annual_contract_value",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "Annual Contract Value",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "revenue_at_risk",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0.00"
+                    },
+                    "displayName": "Revenue at Risk",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "top_driver_summary",
+                    "useForSearch": false,
+                    "displayName": "Top Driver Summary",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "recommended_action",
+                    "useForSearch": false,
+                    "displayName": "Recommended Action",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "fa9792b8",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## <span style=\"text-align:center;display:block;\"><span style=\"color: #FFFFFF;\">Top 5 Priority Accounts</span></span>"
+              ]
+            },
+            "specExtensions": {
+              "widgetBackgroundColor": {
+                "light": "#4B9DBF"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "0918c26a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fba81ada",
+                  "fields": [
+                    {
+                      "name": "client_id",
+                      "expression": "`client_id`"
+                    },
+                    {
+                      "name": "driver_priority",
+                      "expression": "`driver_priority`"
+                    },
+                    {
+                      "name": "driver_name",
+                      "expression": "`driver_name`"
+                    },
+                    {
+                      "name": "driver_explanation",
+                      "expression": "`driver_explanation`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "rowsPerPage": 25,
+              "displayRowNumbers": false,
+              "frame": {
+                "title": "Driver",
+                "showTitle": false
+              },
+              "freezeUpToColumnNumber": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "client_id",
+                    "useForSearch": true,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "Client ID",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "driver_priority",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "numeral.js",
+                      "format": "0"
+                    },
+                    "displayName": "Driver Priority",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "driver_name",
+                    "useForSearch": false,
+                    "displayName": "Driver Name",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "driver_explanation",
+                    "useForSearch": false,
+                    "displayName": "Driver Explanation",
+                    "actions": {
+                      "hover": {
+                        "type": "tooltip",
+                        "tooltipTemplate": "{{ @ }}"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 17,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "9c1bff11",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## <span style=\"text-align:center;display:block;\"><span style=\"color: #FFFFFF;\">Driver Deep Dive by Company</span></span>"
+              ]
+            },
+            "specExtensions": {
+              "widgetBackgroundColor": {
+                "light": "#868887"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 12,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
