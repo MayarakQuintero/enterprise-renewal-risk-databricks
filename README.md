@@ -33,9 +33,9 @@ Databricks, Python, SQL, Spark, MLflow (optional), GitHub
 - `/images` → screenshots used in this README
 
 ## Dashboard Preview
-![](Dashboard_Enterprise_Renewal_Risk_01.PNG)
-![](Dashboard_Enterprise_Renewal_Risk_02.PNG)
-![](Dashboard_Enterprise_Renewal_Risk_03.PNG)
+![](images/Dashboard_Enterprise_Renewal_Risk_01.PNG)
+![](images/Dashboard_Enterprise_Renewal_Risk_02.PNG)
+![](images/Dashboard_Enterprise_Renewal_Risk_03.PNG)
 
 ## Business Impact
 This project shows how a data science workflow can move from raw account signals to an operational retention dashboard that supports targeted interventions.
